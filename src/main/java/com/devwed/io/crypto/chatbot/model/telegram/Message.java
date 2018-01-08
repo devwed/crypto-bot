@@ -1,5 +1,7 @@
 package com.devwed.io.crypto.chatbot.model.telegram;
 
+import java.util.ArrayList;
+
 public class Message {
 
     private int message_id;
@@ -11,6 +13,8 @@ public class Message {
     private long date;
 
     private String text;
+
+    private ArrayList<MessageEntity> entities;
 
     public Message() {
 
@@ -34,6 +38,10 @@ public class Message {
 
     public String getText() {
         return text;
+    }
+
+    public ArrayList<MessageEntity> getEntities() {
+        return entities;
     }
 
 

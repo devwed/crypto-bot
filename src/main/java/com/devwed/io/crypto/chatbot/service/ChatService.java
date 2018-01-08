@@ -2,7 +2,6 @@ package com.devwed.io.crypto.chatbot.service;
 
 import com.devwed.io.crypto.chatbot.client.CoinMarketCapClient;
 import com.devwed.io.crypto.chatbot.enums.telegram.ParseMode;
-import com.devwed.io.crypto.chatbot.model.coinmarketcap.Currency;
 import com.devwed.io.crypto.chatbot.model.telegram.Message;
 import com.devwed.io.crypto.chatbot.model.telegram.MessageReply;
 import com.devwed.io.crypto.chatbot.model.telegram.Update;
@@ -19,17 +18,26 @@ public class ChatService {
 
         Message message = update.getMessage();
 
-        MessageReply reply = new MessageReply(message.getChat().getId(), coinStats("REQ"), ParseMode.Markdown);
+        String text = message.getText();
+
+        //TODO: some parser method here
+        String[] args = text.split(" ");
+        String command = null;
+        String symbol = null;
+        if(args.length < 2) {
+             //TODO: return invalid # of args
+        } else {
+             command = args[0];
+             symbol = args[1];
+        }
+
+        MessageReply reply = new MessageReply(message.getChat().getId(), cmcClient.getCurrencyInfo(symbol), ParseMode.Markdown);
 
         return reply;
 
     }
 
-    public String coinStats(String symbol) {
-
-        Currency currency = cmcClient.getCurrencyInfo(symbol);
-
-        return currency.toMarkdown();
+    public void parseMessageText(String text) {
 
     }
 

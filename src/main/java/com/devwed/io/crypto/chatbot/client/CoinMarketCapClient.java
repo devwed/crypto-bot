@@ -18,21 +18,21 @@ public class CoinMarketCapClient {
     @Value("${api.coinmarketcap.endpoint}")
     private String cmcEndpoint;
 
-    public Currency getCurrencyInfo(String symbol) {
+    public String getCurrencyInfo(String symbol) {
 
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<ArrayList<Currency>> currencies = restTemplate.exchange(cmcEndpoint + CoinMarketCap.TICKER,
                 HttpMethod.GET, null, new ParameterizedTypeReference<ArrayList<Currency>>() {});
 
-        Currency currency = null;
+        String currencyInfo = null;
         for(Currency c : currencies.getBody()) {
             if(Objects.equals(c.getSymbol().toUpperCase(), symbol.toUpperCase())) {
-                currency = c;
+                currencyInfo = c.toMarkdown();
             }
         }
 
-        return currency;
+        return currencyInfo;
 
     }
 

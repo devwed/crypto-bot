@@ -103,8 +103,8 @@ public class Currency {
     }
 
     public String toMarkdown() {
-        return "``` " + symbol + " | " + name + " \nPrice USD: $" + price_usd + " \n1h: " +
-                percent_change_one_hour + "% \n1d: " + percent_change_day + "% \n1w: " + percent_change_week + "% ```";
+        return "```\n" + name + " [" + symbol + "] " + "\ncost: $" + price_usd + "\n1h: " +
+                percent_change_one_hour + "%\n1d: " + percent_change_day + "%\n1w: " + percent_change_week + "% ```";
     }
 
 
