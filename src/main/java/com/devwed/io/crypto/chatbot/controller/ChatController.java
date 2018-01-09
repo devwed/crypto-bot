@@ -27,7 +27,7 @@ public class ChatController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        return new ResponseEntity<>(chatService.processBotUpdate(update),HttpStatus.OK);
+        return new ResponseEntity<>(chatService.botUpdate(update),HttpStatus.OK);
 
     }
 

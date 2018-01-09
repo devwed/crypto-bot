@@ -29,7 +29,12 @@ public class CoinMarketCapClient {
         for(Currency c : currencies.getBody()) {
             if(Objects.equals(c.getSymbol().toUpperCase(), symbol.toUpperCase())) {
                 currencyInfo = c.toMarkdown();
+                break;
             }
+        }
+
+        if(currencyInfo == null) {
+            currencyInfo = "Can't find symbol: " + symbol;
         }
 
         return currencyInfo;
