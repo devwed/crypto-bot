@@ -1,11 +1,14 @@
 package com.devwed.io.crypto.chatbot.model.telegram;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 
 public class Message {
 
-    private int message_id;
+    private long message_id;
 
+    @JsonProperty("from")
     private User sender;
 
     private Chat chat;
@@ -20,7 +23,7 @@ public class Message {
 
     }
 
-    public int getMessage_id() {
+    public long getMessage_id() {
         return message_id;
     }
 
@@ -44,6 +47,15 @@ public class Message {
         return entities;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Message{" +
+                "message_id=" + message_id +
+                ", sender=" + sender +
+                ", chat=" + chat +
+                ", date=" + date +
+                ", text='" + text + '\'' +
+                ", entities=" + entities +
+                '}';
+    }
 }

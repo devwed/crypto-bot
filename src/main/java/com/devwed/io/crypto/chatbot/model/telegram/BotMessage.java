@@ -3,9 +3,9 @@ package com.devwed.io.crypto.chatbot.model.telegram;
 import com.devwed.io.crypto.chatbot.enums.telegram.ParseMode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class MessageReply {
+public class BotMessage {
 
-    private int chat_id;
+    private long chat_id;
 
     private String text;
 
@@ -20,17 +20,17 @@ public class MessageReply {
     @JsonProperty("reply_to_message_id")
     private int replyToMessageId;
 
-    public MessageReply() {
+    public BotMessage() {
 
     }
 
-    public MessageReply(int chat_id, String text, ParseMode parse_mode) {
+    public BotMessage(long chat_id, String text, ParseMode parse_mode) {
         this.chat_id = chat_id;
         this.text = text;
         this.parse_mode = parse_mode;
     }
 
-    public MessageReply(int chat_id, String text, ParseMode parse_mode, boolean disableWebPagePreview, boolean disableNotification, int replyToMessageId) {
+    public BotMessage(long chat_id, String text, ParseMode parse_mode, boolean disableWebPagePreview, boolean disableNotification, int replyToMessageId) {
         this.chat_id = chat_id;
         this.text = text;
         this.parse_mode = parse_mode;
@@ -39,11 +39,11 @@ public class MessageReply {
         this.replyToMessageId = replyToMessageId;
     }
 
-    public int getChat_id() {
+    public long getChat_id() {
         return chat_id;
     }
 
-    public void setChat_id(int chat_id) {
+    public void setChat_id(long chat_id) {
         this.chat_id = chat_id;
     }
 

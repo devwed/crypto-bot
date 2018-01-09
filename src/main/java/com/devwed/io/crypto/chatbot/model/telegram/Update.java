@@ -2,7 +2,7 @@ package com.devwed.io.crypto.chatbot.model.telegram;
 
 public class Update {
 
-    private int update_id;
+    private long update_id;
 
     private Message message;
 
@@ -10,7 +10,7 @@ public class Update {
 
     }
 
-    public int getUpdate_id() {
+    public long getUpdate_id() {
         return update_id;
     }
 
@@ -18,6 +18,11 @@ public class Update {
         return message;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Update{" +
+                "update_id=" + update_id +
+                ", message=" + message +
+                '}';
+    }
 }

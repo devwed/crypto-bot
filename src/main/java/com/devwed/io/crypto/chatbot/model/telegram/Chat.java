@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Chat {
 
-    private int id;
+    private long id;
 
     private String title;
 
@@ -18,7 +18,7 @@ public class Chat {
 
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -34,4 +34,13 @@ public class Chat {
         return allAdmins;
     }
 
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", group='" + group + '\'' +
+                ", allAdmins=" + allAdmins +
+                '}';
+    }
 }

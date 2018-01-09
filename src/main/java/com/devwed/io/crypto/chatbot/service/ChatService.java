@@ -1,10 +1,12 @@
 package com.devwed.io.crypto.chatbot.service;
 
 import com.devwed.io.crypto.chatbot.client.CoinMarketCapClient;
+import com.devwed.io.crypto.chatbot.client.TelegramClient;
 import com.devwed.io.crypto.chatbot.enums.telegram.MessageEntityType;
 import com.devwed.io.crypto.chatbot.enums.telegram.ParseMode;
 import com.devwed.io.crypto.chatbot.model.telegram.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,14 +15,13 @@ public class ChatService {
     @Autowired
     private CoinMarketCapClient cmcClient;
 
-    public MessageReply botUpdate(Update update) {
+    @Autowired
+    private TelegramClient telegramClient;
 
-        Message message = update.getMessage();
-        Chat chat = message.getChat();
+    @Async
+    public void botUpdate(Update update) {
 
-        String response = processMessage(message);
-
-        return new MessageReply(chat.getId(), response, ParseMode.Markdown);
+        telegramClient.sendMessage(update.getMessage().getChat().getId(), processMessage(update.getMessage()));
 
     }
 
@@ -28,11 +29,15 @@ public class ChatService {
 
         // determine entity types
         String messageReply = null;
-        for(MessageEntity entity : message.getEntities()) {
-            if(entity.getType() == MessageEntityType.bot_command) {
-                messageReply = handleBotCommand(message.getText(), entity.getOffset(), entity.getLength());
-                break;
+        if(message.getEntities() != null) {
+            for (MessageEntity entity : message.getEntities()) {
+                if (entity.getType() == MessageEntityType.bot_command) {
+                    messageReply = handleBotCommand(message.getText(), entity.getOffset(), entity.getLength());
+                    break;
+                }
             }
+        } else {
+            messageReply = "No commands specified";
         }
 
         return messageReply;
@@ -57,11 +62,11 @@ public class ChatService {
             case "stats":
                 reply = statsCommand(messageText, commandOffset, commandLength);
                 break;
-            case "gainers": gainersCommand();
-                reply = gainersCommand();
+            case "gainers":
+                reply = gainersCommand(messageText, commandOffset, commandLength);
                 break;
-            case "losers": losersCommand();
-                reply = losersCommand();
+            case "losers":
+                reply = losersCommand(messageText, commandOffset, commandLength);
                 break;
             default:
                 reply = "Unknown command: /" + command;
@@ -89,12 +94,12 @@ public class ChatService {
         return statsResponse;
     }
 
-    public String gainersCommand() {
+    public String gainersCommand(String messageText, int commandOffset, int commandLength) {
 
         return null;
     }
 
-    public String losersCommand() {
+    public String losersCommand(String messageText, int commandOffset, int commandLength) {
 
         return null;
 

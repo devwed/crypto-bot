@@ -2,7 +2,7 @@ package com.devwed.io.crypto.chatbot.model.telegram;
 
 public class User {
 
-    private int id;
+    private long id;
 
     private boolean is_bot;
 
@@ -18,7 +18,7 @@ public class User {
 
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -42,5 +42,16 @@ public class User {
         return language_code;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", is_bot=" + is_bot +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", username='" + username + '\'' +
+                ", language_code='" + language_code + '\'' +
+                '}';
+    }
 
 }

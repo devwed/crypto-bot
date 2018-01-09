@@ -25,9 +25,11 @@ public class ChatController {
 
         if(!Objects.equals(apiKey, telegramApiKey)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            chatService.botUpdate(update);
         }
 
-        return new ResponseEntity<>(chatService.botUpdate(update),HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
