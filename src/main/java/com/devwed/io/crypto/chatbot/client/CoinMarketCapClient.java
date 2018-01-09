@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -22,7 +23,10 @@ public class CoinMarketCapClient {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<ArrayList<Currency>> currencies = restTemplate.exchange(cmcEndpoint + CoinMarketCap.TICKER,
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(cmcEndpoint + CoinMarketCap.TICKER)
+                .queryParam("limit", 0);
+
+        ResponseEntity<ArrayList<Currency>> currencies = restTemplate.exchange(builder.toUriString(),
                 HttpMethod.GET, null, new ParameterizedTypeReference<ArrayList<Currency>>() {});
 
         String currencyInfo = null;
