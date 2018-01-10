@@ -3,11 +3,12 @@ package com.devwed.io.crypto.chatbot.service;
 import com.devwed.io.crypto.chatbot.client.CoinMarketCapClient;
 import com.devwed.io.crypto.chatbot.client.TelegramClient;
 import com.devwed.io.crypto.chatbot.enums.telegram.MessageEntityType;
-import com.devwed.io.crypto.chatbot.enums.telegram.ParseMode;
 import com.devwed.io.crypto.chatbot.model.telegram.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class ChatService {
@@ -27,21 +28,17 @@ public class ChatService {
 
     public String processMessage(Message message) {
 
+        String messageReply = "No commands specified";
+
         // determine entity types
-        String messageReply = null;
-        if(message.getEntities() != null) {
-            for (MessageEntity entity : message.getEntities()) {
-                if (entity.getType() == MessageEntityType.bot_command) {
-                    messageReply = handleBotCommand(message.getText(), entity.getOffset(), entity.getLength());
-                    break;
-                }
+        for (MessageEntity entity : message.getEntities()) {
+            if (entity.getType() == MessageEntityType.bot_command) {
+                messageReply = handleBotCommand(message.getText(), entity.getOffset(), entity.getLength());
+                break;
             }
-        } else {
-            messageReply = "No commands specified";
         }
 
         return messageReply;
-
     }
 
     public String handleBotCommand(String messageText, int commandOffset, int commandLength) {
@@ -54,22 +51,19 @@ public class ChatService {
             command = command.substring(0, command.indexOf("@"));
         }
 
-        // remove leading forward /
-        command = command.substring(1, command.length());
-
         String reply;
         switch(command) {
-            case "stats":
+            case "/stats":
                 reply = statsCommand(messageText, commandOffset, commandLength);
                 break;
-            case "gainers":
-                reply = gainersCommand(messageText, commandOffset, commandLength);
+            case "/gainers":
+                reply = gainersCommand();
                 break;
-            case "losers":
-                reply = losersCommand(messageText, commandOffset, commandLength);
+            case "/losers":
+                reply = losersCommand();
                 break;
             default:
-                reply = "Unknown command: /" + command;
+                reply = "Unknown command: " + command;
         }
 
         return reply;
@@ -79,27 +73,30 @@ public class ChatService {
     public String statsCommand(String messageText, int commandOffset, int commandLength) {
         // get first word after the /stats command
         String text = messageText.substring(commandOffset + commandLength, messageText.length());
-
-        //remove leading space
-        text  = text.replaceFirst("\\s", "");
         String[] textArray = text.split("\\s");
 
-        String statsResponse;
-        if(textArray.length > 0) {
-            statsResponse = cmcClient.getCurrencyInfo(textArray[0]);
-        } else {
-            statsResponse = "A coin/token symbol is required";
+        String symbol = null;
+        for(String s : textArray) {
+            if(!Objects.equals(s, "\\s")) {
+                symbol = s;
+                break;
+            }
         }
 
-        return statsResponse;
+        String stats = "A coin/token symbol is required for this command";
+        if(symbol != null) {
+            stats = cmcClient.getCurrencyInfo(symbol);
+        }
+
+        return stats;
     }
 
-    public String gainersCommand(String messageText, int commandOffset, int commandLength) {
+    public String gainersCommand() {
 
         return null;
     }
 
-    public String losersCommand(String messageText, int commandOffset, int commandLength) {
+    public String losersCommand(){
 
         return null;
 

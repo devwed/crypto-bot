@@ -1,0 +1,3 @@
+stats - Get coin/token stats (args: symbol, ex: /stats eth)
+gainers - Get today's gainers (args: none, ex: /gainers)
+losers - Get today's losers (args: none, ex: /losers)

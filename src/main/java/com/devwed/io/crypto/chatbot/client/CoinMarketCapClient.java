@@ -32,8 +32,15 @@ public class CoinMarketCapClient {
         String currencyInfo = null;
         for(Currency c : currencies.getBody()) {
             if(Objects.equals(c.getSymbol().toUpperCase(), symbol.toUpperCase())) {
+
+                //meme purposes only
+                if(Objects.equals(symbol.toUpperCase(), "XRP")) {
+                    c.setName("Cripple");
+                }
+
                 currencyInfo = c.toMarkdown();
                 break;
+
             }
         }
 
