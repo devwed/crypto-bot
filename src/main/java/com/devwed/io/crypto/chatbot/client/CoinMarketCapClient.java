@@ -33,7 +33,7 @@ public class CoinMarketCapClient {
         for(Currency c : currencies.getBody()) {
             if(Objects.equals(c.getSymbol().toUpperCase(), symbol.toUpperCase())) {
 
-                //meme purposes only
+                //meme
                 if(Objects.equals(symbol.toUpperCase(), "XRP")) {
                     c.setName("Cripple");
                 }

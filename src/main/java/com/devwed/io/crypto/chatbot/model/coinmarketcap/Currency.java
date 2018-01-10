@@ -1,6 +1,11 @@
 package com.devwed.io.crypto.chatbot.model.coinmarketcap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class Currency {
 
@@ -105,8 +110,15 @@ public class Currency {
     }
 
     public String toMarkdown() {
+
+        long updated = Long.parseLong(last_updated);
+        long current = new Date().getTime() / 1000L;
+
+        int minutesSinceLastUpdate = (int) ((current - updated) / 60);
+
         return "```\n" + name + " [" + symbol + "] " + "\nprice: $" + price_usd + "\n1h: " +
-                percent_change_one_hour + "%\n1d: " + percent_change_day + "%\n1w: " + percent_change_week + "% ```";
+                percent_change_one_hour + "%\n1d: " + percent_change_day + "%\n1w: " + percent_change_week +
+                "%\nupdated: " + minutesSinceLastUpdate + " mins ago ```";
     }
 
 

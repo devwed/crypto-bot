@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 public class ChatService {
 
@@ -77,13 +75,14 @@ public class ChatService {
 
         String symbol = null;
         for(String s : textArray) {
-            if(!Objects.equals(s, "\\s")) {
+            s = s.trim();
+            if(!s.isEmpty()) {
                 symbol = s;
                 break;
             }
         }
 
-        String stats = "A coin/token symbol is required for this command";
+        String stats = "A symbol is required for this command (e.g. /stats eth)";
         if(symbol != null) {
             stats = cmcClient.getCurrencyInfo(symbol);
         }
