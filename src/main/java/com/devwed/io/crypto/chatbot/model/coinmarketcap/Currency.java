@@ -3,6 +3,8 @@ package com.devwed.io.crypto.chatbot.model.coinmarketcap;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -109,7 +111,18 @@ public class Currency {
         return last_updated;
     }
 
-    public String toMarkdown() {
+    public String getPriceText() {
+        Double price = BigDecimal.valueOf(Double.parseDouble(price_usd))
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+        return "$" + price;
+    }
+
+    public String getDayChangeText() {
+        return percent_change_day + "%";
+    }
+
+    public String toInfoMarkdown() {
 
         long updated = Long.parseLong(last_updated);
         long current = new Date().getTime() / 1000L;
@@ -120,8 +133,5 @@ public class Currency {
                 percent_change_one_hour + "%\n1d: " + percent_change_day + "%\n1w: " + percent_change_week +
                 "%\nupdated: " + minutesSinceLastUpdate + " mins ago ```";
     }
-
-
-
 
 }

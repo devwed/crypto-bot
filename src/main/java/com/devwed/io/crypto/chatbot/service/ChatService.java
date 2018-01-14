@@ -92,12 +92,12 @@ public class ChatService {
 
     public String gainersCommand() {
 
-        return null;
+        return cmcClient.getTodaysGainers();
     }
 
     public String losersCommand(){
 
-        return null;
+        return cmcClient.getTodaysLosers();
 
     }
 

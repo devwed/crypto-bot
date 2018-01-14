@@ -1,8 +1,10 @@
 package com.devwed.io.crypto.chatbot.model.telegram;
 
 import com.devwed.io.crypto.chatbot.enums.telegram.ParseMode;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BotMessage {
 
     private long chat_id;
@@ -22,6 +24,11 @@ public class BotMessage {
 
     public BotMessage() {
 
+    }
+
+    public BotMessage(long chat_id, String text) {
+        this.chat_id = chat_id;
+        this.text = text;
     }
 
     public BotMessage(long chat_id, String text, ParseMode parse_mode) {
