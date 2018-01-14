@@ -4,7 +4,6 @@ import com.devwed.io.crypto.chatbot.constant.CoinMarketCap;
 import com.devwed.io.crypto.chatbot.model.coinmarketcap.Currency;
 import com.devwed.io.crypto.chatbot.util.GainsComparator;
 import com.devwed.io.crypto.chatbot.util.LosersComparator;
-import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,11 +21,11 @@ public class CoinMarketCapClient {
     @Value("${api.coinmarketcap.endpoint}")
     private String cmcEndpoint;
 
-    private static final String CHANGE_HEADER = "change";
+    private static final String CHANGE_HEADER = "chg";
 
     private static final String PRICE_HEADER = "price";
 
-    private static final String SYMBOL_HEADER = "symbol";
+    private static final String SYMBOL_HEADER = "sym";
 
     public List<Currency> cmcRequest() {
         RestTemplate restTemplate = new RestTemplate();
