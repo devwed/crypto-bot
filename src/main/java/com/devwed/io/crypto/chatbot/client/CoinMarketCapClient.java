@@ -4,6 +4,7 @@ import com.devwed.io.crypto.chatbot.constant.CoinMarketCap;
 import com.devwed.io.crypto.chatbot.model.coinmarketcap.Currency;
 import com.devwed.io.crypto.chatbot.util.GainsComparator;
 import com.devwed.io.crypto.chatbot.util.LosersComparator;
+import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,6 +21,12 @@ public class CoinMarketCapClient {
 
     @Value("${api.coinmarketcap.endpoint}")
     private String cmcEndpoint;
+
+    private static final String CHANGE_HEADER = "change";
+
+    private static final String PRICE_HEADER = "price";
+
+    private static final String SYMBOL_HEADER = "symbol";
 
     public List<Currency> cmcRequest() {
         RestTemplate restTemplate = new RestTemplate();
@@ -70,7 +77,7 @@ public class CoinMarketCapClient {
         currencies = currencies.subList(0, 9);
 
         String dataTable = rankingTablePrettified(currencies);
-        String tableHeader = generateTableHeader("GAINERS (past 24h)", dataTable);
+        String tableHeader = generateTableHeader("GAINERS", dataTable);
 
         String result = "```\n" + tableHeader + "\n"+ dataTable + " ```";
 
@@ -89,7 +96,7 @@ public class CoinMarketCapClient {
         currencies = currencies.subList(0, 9);
 
         String dataTable = rankingTablePrettified(currencies);
-        String tableHeader = generateTableHeader("LOSERS (past 24h)", dataTable);
+        String tableHeader = generateTableHeader("LOSERS", dataTable);
         String result = "```\n" + tableHeader + "\n"+ dataTable + " ```";
 
         return result;
@@ -99,7 +106,6 @@ public class CoinMarketCapClient {
     public List<Currency> getValidCurrencies(List<Currency> currencies) {
 
         List<Currency> validCurrencies = new ArrayList<>();
-
         for(Currency c : currencies) {
             if(c.getPercent_change_day() != null && c.getPrice_usd() != null && c.getSymbol() !=  null) {
                 validCurrencies.add(c);
@@ -113,18 +119,19 @@ public class CoinMarketCapClient {
 
         Map<String, Integer> columns = getColumnLengths(currencies);
 
-        // build heading cells
-        String symbolHeading = generateCell("symbol", columns.get("symbol"));
-        String priceHeading = generateCell("price", columns.get("price"));
-        String changeHeading = generateCell("change", columns.get("change"));
+        // build header cells
+        String symbolHeading = generateCell(SYMBOL_HEADER, columns.get(SYMBOL_HEADER));
+        String priceHeading = generateCell(PRICE_HEADER, columns.get(PRICE_HEADER));
+        String changeHeading = generateCell(CHANGE_HEADER, columns.get(CHANGE_HEADER));
+
         String heading = "|" + symbolHeading + priceHeading + changeHeading + "\n";
         String spacer = generateTableSpacer(heading);
         String result = spacer + heading + spacer;
 
         for(Currency currency : currencies) {
-            result = result + "|" + generateCell(currency.getSymbol(), columns.get("symbol"));
-            result = result + generateCell(currency.getPriceText(), columns.get("price"));
-            result = result + generateCell(currency.getDayChangeText(), columns.get("change")) + "\n";
+            result = result + "|" + generateCell(currency.getSymbol(), columns.get(SYMBOL_HEADER));
+            result = result + generateCell(currency.getPriceText(), columns.get(PRICE_HEADER));
+            result = result + generateCell(currency.getDayChangeText(), columns.get(CHANGE_HEADER)) + "\n";
         }
 
         result = result + spacer;
@@ -141,27 +148,19 @@ public class CoinMarketCapClient {
     }
 
     public String generateCell(String text, int maxLength) {
-
         String column = Strings.padStart(text,(maxLength + text.length())/2, ' ');
         column = Strings.padEnd(column, maxLength, ' ');
         column = column + "|";
-
         return column;
-
     }
 
     public String generateTableSpacer(String text) {
         String spacer = text.replaceAll("\\|", "+");
         spacer = spacer.replaceAll("[\\w ]", "-");
-
         return spacer;
     }
 
     public Map<String, Integer> getColumnLengths(List<Currency> currencies) {
-        String symbolHeading = "symbol";
-        String priceHeading = "price";
-        String changeHeading = "change";
-
         int maxSymbolLength = 0;
         int maxPriceLength = 0;
         int maxPercentageLength = 0;
@@ -170,24 +169,24 @@ public class CoinMarketCapClient {
                 maxSymbolLength = c.getSymbol().length();
             }
             if(c.getPriceText().length() > maxPriceLength) {
-                maxPriceLength = c.getPrice_usd().length();
+                maxPriceLength = c.getPriceText().length();
             }
             if (c.getDayChangeText().length() > maxPercentageLength) {
-                maxPercentageLength = c.getPercent_change_day().length();
+                maxPercentageLength = c.getDayChangeText().length();
             }
         }
 
         Map<String, Integer> columnLengths = new HashMap<>();
-        columnLengths.put(symbolHeading, calculateLengthWithPadding(symbolHeading, maxSymbolLength));
-        columnLengths.put(priceHeading, calculateLengthWithPadding(priceHeading, maxPriceLength));
-        columnLengths.put(changeHeading, calculateLengthWithPadding(changeHeading, maxPercentageLength));
+        columnLengths.put(SYMBOL_HEADER, calculateLengthWithPadding(SYMBOL_HEADER, maxSymbolLength));
+        columnLengths.put(PRICE_HEADER, calculateLengthWithPadding(PRICE_HEADER, maxPriceLength));
+        columnLengths.put(CHANGE_HEADER, calculateLengthWithPadding(CHANGE_HEADER, maxPercentageLength));
 
         return columnLengths;
 
     }
 
     private int calculateLengthWithPadding(String heading, int maxLength) {
-        int padding = 2;
+        int padding = 0;
 
         if(heading.length() > maxLength) {
            maxLength = heading.length();
