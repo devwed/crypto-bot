@@ -22,12 +22,10 @@ public class CoinMarketCapClient {
     private String cmcEndpoint;
 
     private static final String CHANGE_HEADER = "chg";
-
     private static final String PRICE_HEADER = "price";
-
     private static final String SYMBOL_HEADER = "sym";
 
-    public List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> cmcRequest() {
+    public List<Currency> cmcRequest() {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(cmcEndpoint + CoinMarketCap.TICKER)
                 .queryParam("limit", 0);
@@ -42,10 +40,10 @@ public class CoinMarketCapClient {
 
     public String getCurrencyInfo(String symbol) {
 
-        List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> currencies = cmcRequest();
+        List<Currency> currencies = cmcRequest();
 
         String currencyInfo = null;
-        for(io.devwed.crypto.chatbot.model.coinmarketcap.Currency c : currencies) {
+        for(Currency c : currencies) {
             if(Objects.equals(c.getSymbol().toUpperCase(), symbol.toUpperCase())) {
                 //meme
                 if(Objects.equals(symbol.toUpperCase(), "XRP")) {
@@ -66,7 +64,7 @@ public class CoinMarketCapClient {
 
     public String getTodaysGainers() {
 
-        List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> currencies = getValidCurrencies(cmcRequest());
+        List<Currency> currencies = getValidCurrencies(cmcRequest());
 
         // get top 500
         currencies = currencies.subList(0, 499);
@@ -85,7 +83,7 @@ public class CoinMarketCapClient {
     }
 
     public String getTodaysLosers() {
-        List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> currencies = getValidCurrencies(cmcRequest());
+        List<Currency> currencies = getValidCurrencies(cmcRequest());
 
         // get top 500
         currencies = currencies.subList(0, 499);
@@ -102,10 +100,10 @@ public class CoinMarketCapClient {
 
     }
 
-    public List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> getValidCurrencies(List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> currencies) {
+    public List<Currency> getValidCurrencies(List<Currency> currencies) {
 
-        List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> validCurrencies = new ArrayList<>();
-        for(io.devwed.crypto.chatbot.model.coinmarketcap.Currency c : currencies) {
+        List<Currency> validCurrencies = new ArrayList<>();
+        for(Currency c : currencies) {
             if(c.getPercent_change_day() != null && c.getPrice_usd() != null && c.getSymbol() !=  null) {
                 validCurrencies.add(c);
             }
@@ -114,7 +112,7 @@ public class CoinMarketCapClient {
        return validCurrencies;
     }
 
-    public String rankingTablePrettified(List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> currencies) {
+    public String rankingTablePrettified(List<Currency> currencies) {
 
         Map<String, Integer> columns = getColumnLengths(currencies);
 
@@ -127,7 +125,7 @@ public class CoinMarketCapClient {
         String spacer = generateTableSpacer(heading);
         String result = spacer + heading + spacer;
 
-        for(io.devwed.crypto.chatbot.model.coinmarketcap.Currency currency : currencies) {
+        for(Currency currency : currencies) {
             result = result + "|" + generateCell(currency.getSymbol(), columns.get(SYMBOL_HEADER));
             result = result + generateCell(currency.getPriceText(), columns.get(PRICE_HEADER));
             result = result + generateCell(currency.getDayChangeText(), columns.get(CHANGE_HEADER)) + "\n";
@@ -159,7 +157,7 @@ public class CoinMarketCapClient {
         return spacer;
     }
 
-    public Map<String, Integer> getColumnLengths(List<io.devwed.crypto.chatbot.model.coinmarketcap.Currency> currencies) {
+    public Map<String, Integer> getColumnLengths(List<Currency> currencies) {
         int maxSymbolLength = 0;
         int maxPriceLength = 0;
         int maxPercentageLength = 0;
